@@ -31,7 +31,7 @@ def call_openai_api():
     user_request = request.json.get('userRequest', {})
     print("hihi", user_request)
     messages = []
-    messages.append({'role':'system', 'content':'You are an assistant that speaks like digital expert. answer with numbering. answer with korean,'})
+    messages.append({'role':'system', 'content':'너는 디지털취약계층을 위한 디지털 전문가 비서처럼 행동할거야. 1, 2, 3 이런식으로 넘버링해서 존댓말로 공손하게 최대한 자세히 대답해줘. 800자 이내로. '})
     messages.append({"role": "user", "content": user_request.get('utterance', '')})
     callback_url = user_request.get('callbackUrl')
     openai=os.getenv("OPENAI")
@@ -51,7 +51,6 @@ def call_openai_api():
       "useCallback" : True
     })
 
-
 # camera = cv2.VideoCapture(0)
 
 model = torch.hub.load('./yolov5', 'custom', './yolov5/engine/paik.pt', source='local')
@@ -62,6 +61,10 @@ def test():
     infer = cv2.imread('./test.png')
     inference(infer)
     return "ok"
+
+@application.route('/version', methods=['GET'])
+def api_test():
+    return {"version":"v1.0"}
     
     
 def inference(frame):
