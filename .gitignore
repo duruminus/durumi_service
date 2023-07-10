@@ -1,0 +1,17 @@
+# Python
+*.pyc
+__pycache__/
+venv/
+.env
+
+# Flask
+instance/
+webapp/static/uploads/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

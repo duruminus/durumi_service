@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Capture Camera</title>
+  </head>
+  <body>
+    <h1>Camera Capture</h1>
+    <video id="videoElement" width="640" height="480" autoplay></video>
+    <img src="{{ url_for('video_feed') }}" id="BoxedImage" width="640" height="480" />
+    <script>
+      // 비디오 요소 가져오기
+      const video = document.getElementById("videoElement")
+      const boxedImage = document.getElementById("BoxedImage")
+
+      // 미디어 장치 접근 권한 요청
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          // 비디오 요소에 스트림 연결
+          video.srcObject = stream
+        })
+        .catch((error) => {
+          console.error("Error accessing camera:", error)
+        })
+
+      // 이미지 업데이트 함수
+      const updateImage = () => {
+        // Canvas 요소 생성
+        const canvas = document.createElement("canvas")
+        const context = canvas.getContext("2d")
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+
+        // 비디오 프레임을 Canvas에 그리기
+        context.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+        // Canvas에서 이미지 데이터 가져오기
+        const frameData = canvas.toDataURL("image/jpeg", 0.8)
+        const stringData = frameData.split(",")[1]
+        // BoxedImage의 src에 이미지 데이터 설정
+        //boxedImage.src = frameData;
+        // 프레임을 서버로 전송하는 코드 추가
+        fetch("video_feed", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ frame_data: stringData }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Frame uploaded successfully")
+              return response.text()
+            } else {
+              console.error("Error uploading frame")
+            }
+          })
+          .then((responseBody) => {
+            console.log("Response body:", responseBody)
+            // responseBody를 사용하여 필요한 작업 수행
+            boxedImage.src = `data:image/jpeg;base64, ${responseBody}`
+          })
+          .catch((error) => {
+            console.error("Error uploading frame:", error)
+          })
+      }
+
+      // 이미지 업데이트 주기 설정
+      setInterval(updateImage, 1000) // 30프레임/초로 설정
+    </script>
+  </body>
+</html>
