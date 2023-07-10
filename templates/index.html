@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Capture Camera</title>
+    <style>
+      .main {
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+    </style>
   </head>
-  <body>
-    <h1>Camera Capture</h1>
+  <body class="main">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="durumi" />
+    <h2>카메라로 키오스크 화면을 비춰주세요.</h2>
     <video id="videoElement" width="640" height="480" autoplay></video>
-    <img src="{{ url_for('video_feed') }}" id="BoxedImage" width="640" height="480" />
     <script>
       // 비디오 요소 가져오기
       const video = document.getElementById("videoElement")
@@ -14,7 +19,7 @@
 
       // 미디어 장치 접근 권한 요청
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ video: { facingMode: "environment" } })
         .then((stream) => {
           // 비디오 요소에 스트림 연결
           video.srcObject = stream
@@ -49,14 +54,14 @@
         })
           .then((response) => {
             if (response.ok) {
-              console.log("Frame uploaded successfully")
+              //console.log("Frame uploaded successfully")
               return response.text()
             } else {
               console.error("Error uploading frame")
             }
           })
           .then((responseBody) => {
-            console.log("Response body:", responseBody)
+            //console.log("Response body:", responseBody)
             // responseBody를 사용하여 필요한 작업 수행
             boxedImage.src = `data:image/jpeg;base64, ${responseBody}`
           })
