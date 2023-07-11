@@ -1,6 +1,6 @@
 flask
 opencv-python
-Pillow
+Pillow==9.5.0
 numpy
 python-dotenv
 pandas

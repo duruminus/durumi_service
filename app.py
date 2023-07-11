@@ -114,7 +114,7 @@ def api_test():
 def inference(frame):
     # print('Inference start')
     start_time = time.time()
-    inference_results = model(frame, size=640)  # model inference result
+    inference_results = model(frame, size=320)  # model inference result
     inference_results.render()
     end_time = time.time()
     execution_time = end_time - start_time
@@ -140,7 +140,6 @@ def index():
 @application.route('/video_feed',methods=['GET', 'POST'])
 def video_feed():
     # print("video feed start")
-    #frame_data = request.get_data()
     req_data = request.get_json()
     frame_data = req_data['frame_data']
     # Base64로 인코딩된 이미지 데이터를 디코딩합니다.
